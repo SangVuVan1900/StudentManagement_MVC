@@ -1,0 +1,190 @@
+﻿@model IEnumerable<StudentManagement.Models.Student>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dropdowlist {
+        font-size: 22px;
+    }
+
+    th, td {
+        text-align: center;
+    }
+
+    body {
+        font-size: 18px;
+    }
+
+    .create {
+        font-size: large;
+    }
+</style>
+<br />
+<p class="create">
+    <u>@Html.ActionLink("Thêm mới", "Create", new { @class = "btn btn-success" })</u>
+</p>
+<br />
+@using (Html.BeginForm("Index", "Students", FormMethod.Get))
+{
+    <span>Tìm kiếm: </span>
+    @Html.TextBox("txtSearch")
+    @Html.DropDownList("txtClass", new SelectList(ViewBag.Class, "Text", "Value"), "Tên lớp"
+    , new { @class = "dropdowlist" })
+    @Html.DropDownList("txtRank", new SelectList(ViewBag.Ranks, "Text", "Value"), "Học lực"
+    , new { @class = "dropdowlist" })
+    <input type="submit" value="OK" class="btn btn-info btn-lg" />
+
+
+
+}
+<br />
+<br />
+<table class="table table-bordered table-hover">
+    <tr class="bg-primary">
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Class)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rank)
+        </th>
+        <th>Chỉnh sửa</th>
+        <th>Xóa</th>
+    </tr>
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="7" style="color: red">Không tìm thấy học sinh nào</td>
+        </tr>
+
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <tr id="row_@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirthDate)
+                </td>
+                <td>
+                    @switch (@item.Rank)
+                    {
+                        case "Yếu":
+                            <div class="btn-danger">@Html.DisplayFor(modelItem => item.Rank)</div>
+                            break;
+                        case "Trung Bình":
+                            <div class="btn-warning">@Html.DisplayFor(modelItem => item.Rank)</div>
+                            break;
+                        case "Khá":
+                            <div class="btn-info">@Html.DisplayFor(modelItem => item.Rank)</div>
+                            break;
+                        case "Giỏi":
+                            <div class="btn-success">@Html.DisplayFor(modelItem => item.Rank)</div>
+                            break;
+                        default:
+                            <div>@Html.DisplayFor(modelItem => item.Rank)</div>
+                            break;
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }, new { @class = "btn btn-primary" })
+                </td>
+                <td>
+                    <a href="#" class="btn btn-danger" onclick="ConfirmDelete(@item.Id)">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    }
+
+</table>
+<input type="hidden" id="hiddenStudentId" />
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">XÁC NHẬN XÓA</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Bạn có chắc chắn muốn xóa?</h4>
+                <div style="text-align:center; display:none" id="loaderDiv">
+                    <img src="~/Content/img/giphy (1).gif" width="150" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-info" data-dismiss="modal">Trở về</a>
+                <a href="#" class="btn btn-danger" onclick="DeleteStudent()">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    var ConfirmDelete = function (StudentId) {
+        $("#hiddenStudentId").val(StudentId);
+        $("#myModal").modal('show');
+
+    }
+
+    var DeleteStudent = function () {
+        $("#loaderDiv").show();
+        var stdId = $("#hiddenStudentId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Students/DeleteStudent",
+            data: { StudentId: stdId },
+            success: function (result) {
+                $("#loaderDiv").hide();
+                $("#myModal").modal("hide");
+                $("#row_" + stdId).remove();
+            }
+        })
+    }
+
+
+    //$(document).ready(function () {
+    //    $("#btnSubmit").click(function () {
+    //        $("#loaderDiv").show();
+    //        var myFormData = $("#myForm").serialize();
+
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "/Students/Index",
+    //            data: myFormData,
+    //            success: function () {
+    //                $("#loaderDiv").hide();
+    //                $("#myModal").modal("hide");
+    //            }
+    //        })
+    //    });
+
+    //});
+
+
+</script>
+ 

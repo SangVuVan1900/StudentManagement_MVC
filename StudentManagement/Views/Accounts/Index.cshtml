@@ -1,0 +1,93 @@
+﻿@model StudentManagement.Models.Account
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="icon" type="image/png" href="~/Asserts/Login/images/icons/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/vendor/animate/animate.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/vendor/css-hamburgers/hamburgers.min.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/vendor/animsition/css/animsition.min.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/vendor/select2/select2.min.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/vendor/daterangepicker/daterangepicker.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/css/util.css">
+<link rel="stylesheet" type="text/css" href="~/Asserts/Login/css/main.css">
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-form-title" style="background-image: url(../../Asserts/Login/images/bg-01.jpg)">
+                <span class="login100-form-title-1">
+                    Đăng Nhập
+                </span>
+            </div> 
+
+            @using (Html.BeginForm("Login", "Accounts", FormMethod.Post, new { @class = "login100-form validate-form" }))
+            {
+                @Html.AntiForgeryToken()
+                <table>
+                    <tr class="wrap-input100 validate-input m-b-26">
+                        <td>@Html.LabelFor(model => model.Question, htmlAttributes: new { @class = "label-input100" })</td>
+                        <td>
+                            @Html.EditorFor(model => model.Question, new { htmlAttributes = new { @class = "input100" } })
+                        </td>
+                        <td>
+                            @* @Html.ValidationMessageFor(Model => Model.Username, "", new { @class = "text-danger" })*@
+                        </td>
+                    </tr>  
+                    <tr class="wrap-input100 validate-input m-b-26">
+                        <td>@Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "label-input100" })</td>
+                        <td>
+                            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "input100" } })
+                        </td> 
+                        <td>
+                            @* @Html.ValidationMessageFor(Model => Model.Username, "", new { @class = "text-danger" })*@
+                        </td>
+                    </tr>
+                    <tr class="wrap-input100 validate-input m-b-18">
+                        <td>@Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "label-input100" })</td>
+                        <td>
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "input100" } })
+                        </td>
+                        <td>
+                            @*@Html.ValidationMessageFor(Model => Model.Password, "", new { @class = "text-danger" })*@
+                        </td>
+                    </tr>
+
+                    <tr class="flex-sb-m w-full p-b-30">
+                        <td></td>
+                        <td>
+                            <a href="#" class="txt1">Forgot Password?</a>
+                        </td>
+                    </tr>
+                    <tr class="container-login100-form-btn">
+                        <td></td>
+                        <td>
+                            <input type="submit" value="Login" class="login100-form-btn" />
+                        </td>
+                    </tr>
+                </table>
+
+
+                @*<div class="flex-sb-m w-full p-b-30">
+                        <br />
+                        <a href="#" class="txt1">
+                            Forgot Password?
+                        </a>
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn">
+                            Login
+                        </button>
+                    </div>*@
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/Asserts/Login/vendor/animsition/js/animsition.min.js"></script>
+<script src="~/Asserts/Login/vendor/bootstrap/js/popper.js"></script>
+<script src="~/Asserts/Login/vendor/daterangepicker/daterangepicker.js"></script>
+<script src="~/Asserts/Login/vendor/countdowntime/countdowntime.js"></script>
+<script src="~/Asserts/Login/js/main.js"></script>
