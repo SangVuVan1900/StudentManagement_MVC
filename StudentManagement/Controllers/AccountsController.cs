@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using StudentManagement.Models;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace StudentManagement.Controllers
 {
@@ -22,36 +23,70 @@ namespace StudentManagement.Controllers
 
             return View();
         }
-
+        // encode, decode
+        //https://www.youtube.com/watch?v=r94gKb-NzLM
         [HttpPost]
-        public ActionResult Login(Account account) 
+        public ActionResult Login(Account account)
         {
-            //string afterDecode = account.Password;
-            //afterDecode = Base64Decode(afterDecode);  
-            //if (ModelState.IsValid)  
-            //{
-                var obj = db.Accounts.Where(a => a.Username.Equals(account.Username) && a.Password.Equals(account.Password)).FirstOrDefault(); 
-
+            if (!string.IsNullOrEmpty(account.Username) && !string.IsNullOrEmpty(account.Password))
+            {
+                string passwordEncode = EncodePassword(account.Password);
+                var obj = db.Accounts
+                    .Where(a => a.Username.Equals(account.Username) && a.Password.Equals(passwordEncode))
+                    .FirstOrDefault();
                 if (obj != null)
                 {
                     Session["UserName"] = account.Username.Trim();
                     return RedirectToAction("Index", "Students");
-                } 
-                else 
+                }
+                else
                 {
-                    ViewBag.Valid = "Account invalid, please try again!";
+                    ViewBag.Valid = "Thông tin đăng nhập không hợp lệ!";
                     return View(account);
                 }
-            //} 
-            ViewBag.Valid = "Account invalid, please try again!";
-            return View(account);
-        } 
+            }
+            else
+            {
+                ViewBag.Valid = "Thông tin đăng nhập không hợp lệ!";
+                return View(account);
+            }
 
-        //public static string Base64Decode(string base64EncodedData)
-        //{
-        //    var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-        //    return Encoding.UTF8.GetString(base64EncodedBytes);
-        //}
+        }
+
+        public string EncodePassword(string txtPassword)
+        {
+            string text = "";
+            byte[] toEncode = ASCIIEncoding.ASCII.GetBytes(txtPassword);
+            text = Convert.ToBase64String(toEncode);
+            return text;
+        }
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+         
+        [HttpPost] 
+        public async Task<ActionResult> Register
+            ([Bind(Include = "Id,Username,Password,ConfirmPassword,Question")] Account1 account1)
+        {
+            if (ModelState.IsValid)    
+            {
+                Account account = new Account()
+                { 
+                    Username = account1.Username,
+                    Password = account1.Password,
+                    Question = account1.Question
+                };
+                string password = EncodePassword(account.Password);
+                account.Password = password; 
+                db.Accounts.Add(account); 
+                await db.SaveChangesAsync(); 
+                return RedirectToAction("Login");
+            }
+
+            return View(account1);
+        }
 
         // GET: Accounts/Details/5
         public async Task<ActionResult> Details(int? id)
@@ -66,31 +101,9 @@ namespace StudentManagement.Controllers
                 return HttpNotFound();
             }
             return View(account);
-        }
+        } 
 
-        // GET: Accounts/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Accounts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Username,Password,Question")] Account account)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Accounts.Add(account);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-
-            return View(account);
-        }
-
+       
         // GET: Accounts/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {

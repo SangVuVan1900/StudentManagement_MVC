@@ -148,6 +148,7 @@
     <Compile Include="Models\Account.cs">
       <DependentUpon>StudentDbContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Account1.cs" />
     <Compile Include="Models\Ranks.cs" />
     <Compile Include="Models\Student.cs">
       <DependentUpon>StudentDbContext.tt</DependentUpon>
@@ -359,6 +360,7 @@
     <Content Include="Views\Accounts\Edit.cshtml" />
     <Content Include="Views\Accounts\Index.cshtml" />
     <Content Include="Views\Accounts\Login.cshtml" />
+    <Content Include="Views\Accounts\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

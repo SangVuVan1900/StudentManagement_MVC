@@ -16,18 +16,10 @@ namespace StudentManagement.Models
 
     public partial class Account
     {
-        public int Id { get; set; }  
-
-        [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
-        [DisplayName("Tên đăng nhập")]
+        public int Id { get; set; }
         public string Username { get; set; }
-         
-        [DisplayName("Mật khẩu")]
-        [Required(ErrorMessage = "Mật khẩu không được để trống")]
         public string Password { get; set; }
-
-        [DisplayName("Câu hỏi bảo mật")]
-        [Required(ErrorMessage = "Bạn phải điền câu trả lời để phòng trường hợp quên mật khẩu")]
-        public string Question { get; set; }
+        public string Question { get; set; } 
+        // up1
     }
 }
