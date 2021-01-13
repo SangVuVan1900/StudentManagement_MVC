@@ -1,4 +1,6 @@
-﻿@model IEnumerable<StudentManagement.Models.Student>
+﻿@model IPagedList<StudentManagement.Models.Student>
+@using PagedList.Mvc;
+@using PagedList;
 
 @{
     ViewBag.Title = "Index";
@@ -34,8 +36,9 @@
     , new { @class = "dropdowlist" })
     @Html.DropDownList("txtRank", new SelectList(ViewBag.Ranks, "Text", "Value"), "Học lực"
     , new { @class = "dropdowlist" })
-    <input type="submit" value="OK" class="btn btn-info btn-lg" />
-
+    @Html.DropDownList("orderbyRanks", new SelectList(ViewBag.orderbyRank, "Text", "Value"), "Sắp xếp theo học lực"
+    , new { @class = "dropdowlist" }) 
+    <input type="submit" value="Tìm" class="btn btn-info btn-lg" />
 
 
 }
@@ -44,19 +47,19 @@
 <table class="table table-bordered table-hover">
     <tr class="bg-primary">
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.First().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Address)
+            @Html.DisplayNameFor(model => model.First().Address) 
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Class)
+            @Html.DisplayNameFor(model => model.First().Class)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BirthDate)
+            @Html.DisplayNameFor(model => model.First().BirthDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Rank)
+            @Html.DisplayNameFor(model => model.First().Rank)
         </th>
         <th>Chỉnh sửa</th>
         <th>Xóa</th>
@@ -68,7 +71,7 @@
         </tr>
 
     }
-    else 
+    else
     {
         foreach (var item in Model)
         {
@@ -106,7 +109,7 @@
                     }
                 </td>
                 <td>
-                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink(".", "Edit", new { id = item.Id }, new { @class = "btn btn-primary glyphicon glyphicon-edit" })
                 </td>
                 <td>
                     <a href="#" class="btn btn-danger" onclick="ConfirmDelete(@item.Id)">
@@ -140,8 +143,11 @@
         </div>
     </div>
 </div>
-
-
+<div> 
+    <center>
+        @Html.PagedListPager(Model, i => Url.Action("Index", "Students", new { i, seach = Request.QueryString["search"] }))
+    </center>
+</div>
 
 <script type="text/javascript">
     var ConfirmDelete = function (StudentId) {
@@ -187,4 +193,3 @@
 
 
 </script>
- 

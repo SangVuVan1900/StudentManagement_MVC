@@ -17,8 +17,15 @@ namespace StudentManagement.Models
     public partial class Account
     {
         public int Id { get; set; }
+
+
+        [DisplayName("Tên đăng nhập")]
         public string Username { get; set; }
+
+        [DisplayName("Mật khẩu")]
+        [DataType(DataType.Password)] 
         public string Password { get; set; }
+
         public string Question { get; set; } 
         // up1
     }

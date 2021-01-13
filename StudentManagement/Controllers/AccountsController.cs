@@ -64,8 +64,19 @@ namespace StudentManagement.Controllers
         public ActionResult Register()
         {
             return View();
+        } 
+
+        public ActionResult UpdatePassword()
+        {
+            return View();
         }
          
+        [HttpPost] 
+        public ActionResult UpdatePassword(string question)
+        {
+            return View();
+        }
+
         [HttpPost] 
         public async Task<ActionResult> Register
             ([Bind(Include = "Id,Username,Password,ConfirmPassword,Question")] Account1 account1)

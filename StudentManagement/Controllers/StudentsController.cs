@@ -8,6 +8,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using StudentManagement.Models;
+using PagedList.Mvc;
+using PagedList; 
+
 
 namespace StudentManagement.Controllers
 {
@@ -16,17 +19,32 @@ namespace StudentManagement.Controllers
         private StudentManagementEntities db = new StudentManagementEntities();
 
         // GET: Students
-        public async Task<ActionResult> Index(string txtSearch, string txtClass, string txtRank)
-        { 
-            getClass();
-            getRanks();
-            return View(await db.Students 
-                .Where(s => s.Class.Contains(txtClass) && s.Name.Contains(txtSearch) 
-                && s.Address.Contains(txtSearch) && s.Rank.Contains(txtRank)
-                || txtClass == null || txtRank == null || txtSearch == null)    
-                .ToListAsync());       
+        public ActionResult Index(string txtSearch, string txtClass, string txtRank, int? i, string orderbyRanks)
+        {
+            getClass();  
+            getRanks(); 
+            orderbyRank();
+            if (orderbyRanks == "Thấp -> Cao")
+            {
+                var desc = from student in db.Students
+                           orderby student.Rank descending
+                           select student;
+                return View(desc.ToList().ToPagedList(i ?? 1, 10));
+            }
+            else if (orderbyRanks == "Cao -> Thấp")
+            {
+                var asc = from student in db.Students
+                          orderby student.Rank
+                          select student;
+                return View(asc.ToList().ToPagedList(i ?? 1, 10));
+            } 
+
+            return View(db.Students
+                .Where(s => s.Class.Contains(txtClass) && (s.Name.Contains(txtSearch) || s.Address.Contains(txtSearch))
+                && s.Rank.Contains(txtRank) || txtClass == null || txtRank == null || txtSearch == null)
+                .ToList().ToPagedList(i ?? 1, 10));
         }
-         
+
         [HttpPost]
         public async Task<ActionResult> Index()
         {
@@ -59,6 +77,17 @@ namespace StudentManagement.Controllers
             };
             ViewBag.Class = listClass;
         }
+
+        public void orderbyRank()
+        {
+            List<SelectListItem> listOrderbyRank = new List<SelectListItem>()
+            {
+                new SelectListItem() {Text = "Cao -> Thấp", Value = "Cao -> Thấp"},
+                new SelectListItem() {Text = "Thấp -> Cao", Value = "Thấp -> Cao"}
+            }; 
+            ViewBag.orderbyRank = listOrderbyRank;
+        }
+
         public void getRanks()
         {
             List<SelectListItem> listRanks = new List<SelectListItem>()
@@ -78,6 +107,12 @@ namespace StudentManagement.Controllers
 
             return View();
         }
+         
+        public ActionResult Reset()
+        {
+            return View(); 
+        }
+
 
         // POST: Students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -86,7 +121,7 @@ namespace StudentManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Name,BirthDate,Address,Class,Rank")] Student student)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 db.Students.Add(student);
                 await db.SaveChangesAsync();
@@ -100,7 +135,7 @@ namespace StudentManagement.Controllers
         {
             getClass();
             getRanks();
-           
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

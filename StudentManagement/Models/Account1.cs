@@ -23,7 +23,8 @@ namespace StudentManagement.Models
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [DisplayName("Xác nhận mật khẩu")]
+        [DisplayName("Xác nhận mật khẩu")]  
+        [Required(ErrorMessage = "Xác nhận mật khẩu sai")]
         [Compare("Password", ErrorMessage = "Xác nhận mật khẩu sai")]
         public string ConfirmPassword { get; set; }
 
